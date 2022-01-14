@@ -16,6 +16,7 @@ export default {
       content: "",
     };
   },
+
   mounted() {
     UserService.getPublicContent().then(
       (response) => {
