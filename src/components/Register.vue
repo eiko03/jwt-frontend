@@ -9,9 +9,9 @@
       <Form @submit="handleRegister" :validation-schema="schema">
         <div v-if="!successful">
           <div class="form-group">
-            <label for="username">Username</label>
-            <Field name="username" type="text" class="form-control" />
-            <ErrorMessage name="username" class="error-feedback" />
+            <label for="name">Name</label>
+            <Field name="name" type="text" class="form-control" />
+            <ErrorMessage name="name" class="error-feedback" />
           </div>
           <div class="form-group">
             <label for="email">Email</label>
@@ -22,6 +22,11 @@
             <label for="password">Password</label>
             <Field name="password" type="password" class="form-control" />
             <ErrorMessage name="password" class="error-feedback" />
+          </div>
+          <div class="form-group">
+            <label for="password_confirmation">Confirm password</label>
+            <Field name="password_confirmation" type="password" class="form-control" />
+            <ErrorMessage name="password_confirmation" class="error-feedback" />
           </div>
 
           <div class="form-group">
@@ -60,9 +65,9 @@ export default {
   },
   data() {
     const schema = yup.object().shape({
-      username: yup
+      name: yup
         .string()
-        .required("Username is required!")
+        .required("Name is required!")
         .min(3, "Must be at least 3 characters!")
         .max(20, "Must be maximum 20 characters!"),
       email: yup
@@ -73,8 +78,18 @@ export default {
       password: yup
         .string()
         .required("Password is required!")
-        .min(6, "Must be at least 6 characters!")
-        .max(40, "Must be maximum 40 characters!"),
+        .min(8, "Must be at least 8 characters!")
+        .max(40, "Must be maximum 40 characters!")
+        .matches(/[a-z]+/,"password must have at least one lowercase letter")
+        .matches(/[A-Z]+/,"password must have at least one uppercase letter")
+        .matches(/[0-9]+/,"password must have at least one digit")
+        .matches(/[^(A-Za-z0-9 )]+/,"password must have at least one special character"),
+      password_confirmation: yup
+        .string()
+        .required("Confirmation is required!")
+        .min(8, "Must be at least 8 characters!")
+        .max(40, "Must be maximum 40 characters!")
+        .oneOf([yup.ref("password")], "Passwords do not match"),
     });
 
     return {

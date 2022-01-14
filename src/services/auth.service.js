@@ -14,20 +14,20 @@ let header = {
 
 class AuthService {
   login(payload) {
-    let response = appClient.post("auth/login/", payload);
+    let response = appClient.post( "auth/login", payload);
     localStorage.setItem("jwt", response?.data?.access_token);
     return response;
   }
 
   logout() {
     localStorage.removeItem('user');
-    let response= appClient.post("auth/logout/", header);
+    let response= appClient.post("auth/logout", header);
     localStorage.removeItem("jwt");
     return response;
   }
 
   register(payload) {
-    return appClient.post("auth/register/", payload);
+    return appClient.post("auth/register", payload);
   }
 }
 
