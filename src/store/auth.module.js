@@ -7,13 +7,49 @@ const initialState = user
 
 export const auth = {
   namespaced: true,
-  state: initialState,
+
+  state: {
+    initialState,
+    user: null,
+    status:{"loggedIn":false},
+    isLoggedIn:false,
+    jwt:""
+  },
+
+  getters: {
+    get_self: (state) => {
+      return state.user;
+    },
+    get_status: (state) => {
+      return state.status.loggedIn;
+    },
+    jwt: (state) => {
+      return state.jwt;
+    },
+  },
+
+
+
+
+
   actions: {
     login({ commit }, user) {
       return AuthService.login(user).then(
         res => {
-          commit('loginSuccess', res);
-          return Promise.resolve(res);
+          commit('loginSuccess',res);
+          return Promise.resolve( res);
+        },
+        error => {
+          commit('loginFailure');
+          return Promise.reject(error);
+        }
+      );
+    },
+    self({ commit }) {
+      return AuthService.me().then(
+        res => {
+          commit('self',res.data);
+          return Promise.resolve( res.data);
         },
         error => {
           commit('loginFailure');
@@ -38,9 +74,14 @@ export const auth = {
       );
     }
   },
+
+
   mutations: {
-    loginSuccess(state, user) {
+    loginSuccess(state,res) {
       state.status.loggedIn = true;
+      state.jwt=res;
+    },
+    self(state, user) {
       state.user = user;
     },
     loginFailure(state) {

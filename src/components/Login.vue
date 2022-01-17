@@ -73,11 +73,13 @@ export default {
     }
   },
   methods: {
-    handleLogin(user) {
+    async handleLogin(user) {
       this.loading = true;
 
-      this.$store.dispatch("auth/login", user).then(
-        () => {
+      await this.$store.dispatch("auth/login", user).then(
+        (res) => {
+          console.log(res);
+          localStorage.setItem("jwt", res?.access_token);
           this.$router.push("/profile");
         },
         (error) => {

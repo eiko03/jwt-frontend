@@ -2,40 +2,63 @@
   <div class="container">
     <header class="jumbotron">
       <h3>
-        <strong>{{currentUser.name}}</strong> Profile
+        <strong>{{currentUser?.data?.name}}</strong> Profile
       </h3>
     </header>
-<!--    <p>-->
-<!--      <strong>Token:</strong>-->
-<!--      {{currentUser.accessToken.substring(0, 20)}} ... {{currentUser.accessToken.substr(currentUser.accessToken.length - 20)}}-->
-<!--    </p>-->
+
     <p>
       <strong>Id:</strong>
-      {{currentUser.id}}
+      {{currentUser?.data?.id}}
     </p>
     <p>
       <strong>Email:</strong>
-      {{currentUser.email}}
+      {{currentUser?.data?.email}}
     </p>
-<!--    <strong>Authorities:</strong>-->
-<!--    <ul>-->
-<!--      <li v-for="role in currentUser.roles" :key="role">{{role}}</li>-->
-<!--    </ul>-->
+
+
+
   </div>
 </template>
 
 <script>
+
+import { reactive, computed,onMounted } from "vue";
+
+
+import { useStore } from "vuex";
+
 export default {
   name: 'Profile',
-  computed: {
-    currentUser() {
-      return this.$store.state.auth.user;
-    }
-  },
-  mounted() {
-    if (!this.currentUser) {
-      this.$router.push('/login');
-    }
+
+  setup(){
+    const store = useStore();
+    const state = reactive({
+      is_default:false,
+      selectLoading: false,
+      name: "",
+      address: "",
+      city: "",
+      state: "",
+      zip: "",
+      country: "",
+      errors: "",
+    });
+
+    const currentUser = computed(() => store.getters["auth/get_self"]);
+
+    onMounted( () => {
+
+       store.dispatch("auth/self").then(
+           res=> {
+             if(!res.data.id)
+              this.$router.push('/login');
+       });
+    });
+
+    return {
+      state,
+      currentUser
+    };
   }
 };
 </script>
