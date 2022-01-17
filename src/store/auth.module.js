@@ -37,6 +37,16 @@ export const auth = {
       return AuthService.login(user).then(
         res => {
           commit('loginSuccess',res);
+          AuthService.me(res?.data?.access_token).then(
+              res => {
+                commit('self',res.data);
+                return Promise.resolve( res.data);
+              },
+              error => {
+                commit('loginFailure');
+                return Promise.reject(error);
+              }
+          );
           return Promise.resolve( res);
         },
         error => {

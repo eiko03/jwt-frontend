@@ -64,7 +64,7 @@ export default {
   },
   computed: {
     loggedIn() {
-      return this.$store.state.auth.status.loggedIn;
+      return localStorage.getItem("jwt");
     },
   },
   created() {
@@ -78,8 +78,9 @@ export default {
 
       await this.$store.dispatch("auth/login", user).then(
         (res) => {
-          console.log(res);
-          localStorage.setItem("jwt", res?.access_token);
+          // console.log(res);
+          // console.log(1);
+          localStorage.setItem("jwt", res?.data?.access_token);
           this.$router.push("/profile");
         },
         (error) => {

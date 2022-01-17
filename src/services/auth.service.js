@@ -1,7 +1,5 @@
 import axios from 'axios';
-import { useStore } from "vuex";
 
-const store = useStore();
 
 const appClient = axios.create({
   baseURL: process.env.VUE_APP_BASE_API_URL,
@@ -9,7 +7,7 @@ const appClient = axios.create({
 // eslint-disable-next-line no-unused-vars
 let header = {
   headers: {
-    Authorization: store.getters["auth/jwt"],
+    Authorization: localStorage.getItem("jwt"),
     "Content-Type": "application/json",
     Accept: "application/json",
   },
@@ -17,14 +15,10 @@ let header = {
 
 class AuthService {
   login(payload) {
-    return appClient.post( "auth/login", payload)
-        .then( res =>{
-      // console.log(res);
-      localStorage.setItem("jwt", res?.data?.access_token);
-      });
+    return appClient.post( "auth/login", payload);
   }
-  me() {
-    return appClient.get( "auth/me", header);
+  me(token) {
+    return appClient.get( "auth/me", {"Authorization":token});
   }
 
   logout() {

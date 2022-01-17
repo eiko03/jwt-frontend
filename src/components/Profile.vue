@@ -29,7 +29,16 @@ import { useStore } from "vuex";
 
 export default {
   name: 'Profile',
-
+  computed: {
+    loggedIn() {
+      return localStorage.getItem("jwt");
+    },
+  },
+  created() {
+    if (this.loggedIn) {
+      this.$router.push("/login");
+    }
+  },
   setup(){
     const store = useStore();
     const state = reactive({
@@ -48,11 +57,7 @@ export default {
 
     onMounted( () => {
 
-       store.dispatch("auth/self").then(
-           res=> {
-             if(!res.data.id)
-              this.$router.push('/login');
-       });
+       store.dispatch("auth/self");
     });
 
     return {
